@@ -48,8 +48,8 @@ def svm_loss_naive(W, X, y, reg):
 
   # average the gradient over the length of minibatch
   dW /= num_train
-  # add the gradient of regularization
-  dW += 2*W
+  # gradient of regularization
+  dW += 2*reg*W
 
   #############################################################################
   # TODO:                                                                     #
@@ -78,7 +78,13 @@ def svm_loss_vectorized(W, X, y, reg):
   # Implement a vectorized version of the structured SVM loss, storing the    #
   # result in loss.                                                           #
   #############################################################################
-  pass
+  num_train = X.shape[0]
+  scores = np.dot(X, W)
+  correct_class_score = np.reshape(scores[range(num_train), y], (num_train, 1))
+  margin = scores - correct_class_score + 1
+  margin[range(num_train), y] = 0
+  loss = np.sum(margin[margin > 0])/num_train
+  loss += reg * np.sum(W * W)
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
@@ -93,7 +99,13 @@ def svm_loss_vectorized(W, X, y, reg):
   # to reuse some of the intermediate values that you used to compute the     #
   # loss.                                                                     #
   #############################################################################
-  pass
+  desired_margin = margin > 0
+  desired_margin = desired_margin.astype(np.int)
+  desired_margin_count = np.sum(desired_margin, axis=1)
+  desired_margin[range(num_train), y] -= desired_margin_count
+  dW = np.dot(X.T, desired_margin)
+  dW /= num_train
+  dW += 2*reg*W
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
