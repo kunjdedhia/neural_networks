@@ -91,7 +91,7 @@ class LinearClassifier(object):
       array of length N, and each element is an integer giving the predicted
       class.
     """
-    # y_pred = np.zeros(X.shape[0])
+    y_pred = np.zeros(X.shape[0])
     ###########################################################################
     # TODO:                                                                   #
     # Implement this method. Store the predicted labels in y_pred.            #
